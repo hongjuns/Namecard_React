@@ -1,20 +1,24 @@
 import React, { Component } from 'react';
+
+
 import CustomerAdd from './components/CustomerAdd';
 import Customer from './components/Customer'
-import Home from './components/Home'
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from '@material-ui/core/styles';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
+import { fade } from '@material-ui/core/styles/colorManipulator';
+import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -22,7 +26,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
-import { BrowserRouter as Router, Route , Link} from 'react-router-dom';
+
+
+
+
+
+
 
 
 const styles = theme => ({
@@ -36,20 +45,73 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'center'
   },
-  progress: {
-    margin: theme.spacing.unit * 2
-  },
   paper: {
     marginLeft: 18,
     marginRight: 18
   },
+  progress: {
+    margin: theme.spacing.unit * 2
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  tableHead: {
+    fontSize: '1.0rem'
+  },
   menuButton: {
-    marginRight: theme.spacing(2),
+   marginLeft: -12,
+    marginRight: 20,
   },
   title: {
-    flexGrow: 1,
-  }   
-});
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+    display: 'block',
+    },
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+    backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing.unit,
+    width: 'auto',
+    },
+  },
+  searchIcon: {
+    width: theme.spacing.unit * 9,
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+    width: '100%',
+  },
+  inputInput: {
+    paddingTop: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit * 10,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+    width: 120,
+      '&:focus': {
+      width: 200,
+      },
+    },
+  }
+  });
+  
+
   
 const customers = [
   {
@@ -86,7 +148,7 @@ class App extends Component {
 
 
   componentDidMount() {
-    setInterval(this.progress, 20);
+   // setInterval(this.progress, 20);
   }
     
   progress = () => {
@@ -101,43 +163,54 @@ class App extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-  
+         {/* APP Bar */}
           <AppBar position="static" onClick={this.handleDrawerToggle}>
             <Toolbar>
                 <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="Menu" >
                   <MenuIcon />
                 </IconButton>
                   <Typography variant="h6" className={classes.title}>고객관리시스템</Typography>
+                  <div className={classes.grow}/>
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      placeholder="검색하기"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                    />
+                  </div>
               </Toolbar>
           </AppBar>
-
-          <Router>
-          <Route exact path="/home" component={Home}/>     
+          {/* Drawer */}
           <Drawer
               className={classes.drawer}
               open={this.state.toggle} onClick={this.handleDrawerToggle}
               anchor="left">
-                
             <Divider />
             <List>
-                 <ListItem >
-                   <ListItemIcon> <MailIcon /></ListItemIcon>
-                    <ListItemText > 
-                    <Link to="/home" className="item" activeClassName="active">로그인</Link>
-                      </ListItemText>
+                 <ListItem button key="home">
+                   <ListItemIcon > <MailIcon /></ListItemIcon>
+                    <ListItemText primary="home"> Home </ListItemText>
                  </ListItem>
-                 <ListItem >
-                   <ListItemIcon> <MailIcon /></ListItemIcon>
-                   <ListItemText >  TEST </ListItemText>
+                 <ListItem button key ="about">
+                   <ListItemIcon > <MailIcon /></ListItemIcon>
+                   <ListItemText primary="about">  about </ListItemText>
                  </ListItem>
-                 <ListItem button key="TEST">
+                 <ListItem button key="list">
                    <ListItemIcon> <MailIcon /></ListItemIcon>
-                   <ListItemText primary="TESST" >  </ListItemText>
+                   <ListItemText primary="list" > List  </ListItemText>
                  </ListItem>
             </List>
           </Drawer>
-          </Router>
-
+          {/* 고객추가 버튼 */}
+          <div className={classes.menu}>
+            <CustomerAdd />
+          </div>
+          {/*고객 List */}
           <Paper className={classes.root}>
               <Table>
                 <TableHead>
@@ -161,7 +234,6 @@ class App extends Component {
                   </TableBody>
               </Table>
             </Paper>
-            <CustomerAdd/>
       </div>
     );
   }
