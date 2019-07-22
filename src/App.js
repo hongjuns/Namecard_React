@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-
-
 import CustomerAdd from './components/CustomerAdd';
 import Customer from './components/Customer'
+import Preparation from './components/Preparation'
+
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -26,12 +26,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
-
-
-
-
-
-
 
 
 const styles = theme => ({
@@ -60,7 +54,7 @@ const styles = theme => ({
   },
   menuButton: {
    marginLeft: -12,
-    marginRight: 20,
+   marginRight: 20,
   },
   title: {
     display: 'none',
@@ -101,6 +95,7 @@ const styles = theme => ({
     paddingBottom: theme.spacing.unit,
     paddingLeft: theme.spacing.unit * 10,
     transition: theme.transitions.create('width'),
+    cursor:"pointer",
     width: '100%',
     [theme.breakpoints.up('sm')]: {
     width: 120,
@@ -109,9 +104,7 @@ const styles = theme => ({
       },
     },
   }
-  });
-  
-
+});
   
 const customers = [
   {
@@ -143,7 +136,8 @@ const customers = [
 class App extends Component {
   state = {
     customers: '',
-    completed: 0
+    completed: 0,
+    open:false
   }
 
 
@@ -158,16 +152,19 @@ class App extends Component {
   };
 
   handleDrawerToggle = () => this.setState({toggle: !this.state.toggle})
+  handlepreparation = () =>{alert("준비중 입니다.");}
+  handleClickOpen = () => this.setState({ open: true})
 
   render() {
     const { classes } = this.props;
+
     return (
       <div className={classes.root}>
          {/* APP Bar */}
-          <AppBar position="static" onClick={this.handleDrawerToggle}>
+          <AppBar position="static">
             <Toolbar>
                 <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="Menu" >
-                  <MenuIcon />
+                  <MenuIcon onClick={this.handleDrawerToggle} />
                 </IconButton>
                   <Typography variant="h6" className={classes.title}>고객관리시스템</Typography>
                   <div className={classes.grow}/>
@@ -194,21 +191,22 @@ class App extends Component {
             <List>
                  <ListItem button key="home">
                    <ListItemIcon > <MailIcon /></ListItemIcon>
-                    <ListItemText primary="home"> Home </ListItemText>
+                    <ListItemText primary="home"onClick={this.handlepreparation} > Home </ListItemText>
                  </ListItem>
                  <ListItem button key ="about">
                    <ListItemIcon > <MailIcon /></ListItemIcon>
-                   <ListItemText primary="about">  about </ListItemText>
+                   <ListItemText primary="about" onClick={this.handlepreparation} >  about </ListItemText>
                  </ListItem>
                  <ListItem button key="list">
                    <ListItemIcon> <MailIcon /></ListItemIcon>
-                   <ListItemText primary="list" > List  </ListItemText>
+                   <ListItemText primary="list" onClick={this.handleClickOpen} > List  </ListItemText>
                  </ListItem>
             </List>
           </Drawer>
           {/* 고객추가 버튼 */}
           <div className={classes.menu}>
             <CustomerAdd />
+            <Preparation open={this.state.open}/>
           </div>
           {/*고객 List */}
           <Paper className={classes.root}>
@@ -221,6 +219,7 @@ class App extends Component {
                       <TableCell>생년월일</TableCell>
                       <TableCell>성별</TableCell>
                       <TableCell>직업</TableCell>
+                      <TableCell>설정 </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
