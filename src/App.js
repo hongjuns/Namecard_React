@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import CustomerAdd from './components/CustomerAdd';
 import Customer from './components/Customer'
 import Preparation from './components/Preparation'
-
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -24,9 +23,7 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
-
 
 const styles = theme => ({
   root: {
@@ -137,10 +134,10 @@ class App extends Component {
   state = {
     customers: '',
     completed: 0,
-    open:false
+    opens : false
   }
 
-
+    
   componentDidMount() {
    // setInterval(this.progress, 20);
   }
@@ -153,7 +150,16 @@ class App extends Component {
 
   handleDrawerToggle = () => this.setState({toggle: !this.state.toggle})
   handlepreparation = () =>{alert("준비중 입니다.");}
-  handleClickOpen = () => this.setState({ open: true})
+  handleClickOpen = () => this.setState({ 
+    opens: !this.state.opens
+  })
+
+  handleSendClose = (data) => {
+    this.setState({
+      opens : data
+    })
+    console.log (this.state.opens)
+  }
 
   render() {
     const { classes } = this.props;
@@ -191,22 +197,22 @@ class App extends Component {
             <List>
                  <ListItem button key="home">
                    <ListItemIcon > <MailIcon /></ListItemIcon>
-                    <ListItemText primary="home"onClick={this.handlepreparation} > Home </ListItemText>
+                   <b onClick={this.handleClickOpen}> Home</b> 
                  </ListItem>
                  <ListItem button key ="about">
                    <ListItemIcon > <MailIcon /></ListItemIcon>
-                   <ListItemText primary="about" onClick={this.handlepreparation} >  about </ListItemText>
+                   <b onClick={this.handleClickOpen}> About</b> 
                  </ListItem>
-                 <ListItem button key="list">
+                 <ListItem button key="">
                    <ListItemIcon> <MailIcon /></ListItemIcon>
-                   <ListItemText primary="list" onClick={this.handleClickOpen} > List  </ListItemText>
+                   <b onClick={this.handleClickOpen}> LIST </b>    
                  </ListItem>
             </List>
           </Drawer>
           {/* 고객추가 버튼 */}
           <div className={classes.menu}>
             <CustomerAdd />
-            <Preparation open={this.state.open}/>
+            <Preparation opens={this.state.opens} send={this.handleSendClose}/>
           </div>
           {/*고객 List */}
           <Paper className={classes.root}>

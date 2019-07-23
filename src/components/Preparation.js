@@ -6,50 +6,44 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Typography from '@material-ui/core/Typography';
 
-
 class Preparation extends Component {
     constructor(props){
         super(props);
-        const open = this.props.open
-        console.log(open);
         this.state = {
             open:false
         }
-        this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this)
     }
 
-
-
-    handleClickOpen() {
+    componentWillReceiveProps(nextProps){
         this.setState({
-            open: true
-        });    
+            open:nextProps.opens
+        });
+        console.log("componentWillReceiveProps: " + nextProps.opens);
     }
-         
+
     handleClose() {
+        this.props.send(false)
         this.setState({
             open: false
         });   
      }
 
     render() {
-        const open = this.props.open
-        
+    
         return (
             <div>
      
                 <Dialog onClose={this.handleClose} open={this.state.open}>
                  <DialogTitle onClose={this.handleClose}>
-                    삭제 경고
+                    준비중 
                 </DialogTitle>
                 <DialogContent>
                     <Typography gutterBottom>
-                        선택한 고객 정보가 삭제됩니다.
+                        현제 페이지는 준비중 입니다.
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" color="primary">삭제</Button>
                     <Button variant="outlined" color="primary" onClick={this.handleClose}>닫기</Button>
                 </DialogActions>
                 </Dialog>
