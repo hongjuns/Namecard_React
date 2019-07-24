@@ -102,34 +102,7 @@ const styles = theme => ({
     },
   }
 });
-  
-const customers = [
-  {
-    'id': 1,
-    'image': 'https://placeimg.com/64/64/1',
-    'name': '홍길동',
-    'birthday': '961222',
-    'gender': '남자',
-    'job': '대학생'
-  },
-  {
-    'id': 2,
-    'image': 'https://placeimg.com/64/64/2',
-    'name': '나동빈',
-    'birthday': '960508',
-    'gender': '남자',
-    'job': '프로그래머'
-  },
-  {
-    'id': 3,
-    'image': 'https://placeimg.com/64/64/3',
-    'name': '이순신',
-    'birthday': '961127',
-    'gender': '남자',
-    'job': '디자이너'
-  }
-];
-   
+     
 class App extends Component {
   state = {
     customers: '',
@@ -137,19 +110,55 @@ class App extends Component {
     opens : false
   }
 
-    
+
   componentDidMount() {
-   // setInterval(this.progress, 20);
+    this.timer = setInterval(this.progress, 20);
+    this._getData();
   }
+
+  _getData = async () => {
+     const customers = await this._callApi();
+       this.setState({
+          customers
+       });
+     
+   };
+
+  _callApi =() => {
+    return fetch(
+      "http://localhost:8080/user/findAll"
+    )
+    .then(Response =>Response.json())
+    .then(json => json)
+    .catch(err =>console.log(err));
+  }
+  
+  _renderUser = () => {
+    const customer = this.state.customers.map(customer => {
+      return (
+        <Customer
+          id={customer.id}
+          name={customer.name}
+          birthday={customer.birthday}
+          gender={customer.gender}
+          job={customer.job}
+        />
+      );
+    });
+    return customer;
+  };
+
     
+   componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+      
   progress = () => {
-    const { completed } = this.state;
-    this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
-    
+      const { completed } = this.state;
+      this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
   };
 
   handleDrawerToggle = () => this.setState({toggle: !this.state.toggle})
-  handlepreparation = () =>{alert("준비중 입니다.");}
   handleClickOpen = () => this.setState({ 
     opens: !this.state.opens
   })
@@ -158,12 +167,11 @@ class App extends Component {
     this.setState({
       opens : data
     })
-    console.log (this.state.opens)
   }
 
   render() {
     const { classes } = this.props;
-
+    const { customers } = this.state;
     return (
       <div className={classes.root}>
          {/* APP Bar */}
@@ -229,12 +237,12 @@ class App extends Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {customers.map(user => (
-                        <Customer customer={user} key={user.id} />
-                    ))}
-                    <TableCell colSpan="6" align="center">
+
+                    {customers ? this._renderUser() : <TableCell colSpan="6" align="center">
                        <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed} />
-                    </TableCell>
+                    </TableCell>}
+                  
+               
 
                   </TableBody>
               </Table>
