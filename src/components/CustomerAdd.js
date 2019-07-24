@@ -6,6 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
+import { post } from 'axios';
 
 
 const styles = theme => ({
@@ -35,16 +36,14 @@ class CustomerAdd extends Component {
         this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this);
         
-
     }
 
     handleFormSubmit(e) {
         e.preventDefault()
-        //this.addCustomer()
-        
-        //.then((response) => {
-       // console.log(response.data);
-       // })    
+        this.addCustomer()
+        .then((response) => {
+        console.log(response.data);
+        })    
     }
             
     handleFileChange(e) {
@@ -78,7 +77,26 @@ class CustomerAdd extends Component {
         })
     }
         
+    addCustomer(){
+
+        const url = 'http://localhost:8080/user';
+        const formData = new FormData();
+        formData.append('image', this.state.file)
+        formData.append('name', this.state.userName)
+        formData.append('birthday', this.state.birthday)
+        formData.append('gender', this.state.gender)
+        formData.append('job', this.state.job)
+        const config = {
+            headers: {
+            'content-type': 'multipart/form-data'
+            }
+        }
         
+        return post(url, formData, config)
+        
+    }
+        
+  
 
     render() {
         const { classes } = this.props;

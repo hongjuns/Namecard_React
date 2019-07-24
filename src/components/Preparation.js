@@ -19,7 +19,7 @@ class Preparation extends Component {
         this.setState({
             open:nextProps.opens
         });
-        console.log("componentWillReceiveProps: " + nextProps.opens);
+        //console.log("componentWillReceiveProps: " + nextProps.opens);
     }
 
     handleClose() {

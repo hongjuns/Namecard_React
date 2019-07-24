@@ -6,7 +6,7 @@ import CustomerDelete from './CustomerDelete'
 class Customer extends Component {
     render() {
         const customer = this.props.id
-        console.log(customer)
+       // console.log(customer)
 
         return (
          
