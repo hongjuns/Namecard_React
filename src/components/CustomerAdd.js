@@ -16,7 +16,6 @@ const styles = theme => ({
     
 });
     
-    
 class CustomerAdd extends Component {
 
     constructor(props) {
@@ -35,14 +34,31 @@ class CustomerAdd extends Component {
         this.handleValueChange = this.handleValueChange.bind(this)
         this.handleClickOpen = this.handleClickOpen.bind(this)
         this.handleClose = this.handleClose.bind(this);
-        
     }
+
 
     handleFormSubmit(e) {
         e.preventDefault()
         this.addCustomer()
         .then((response) => {
-        console.log(response.data);
+         
+            if (response.data.message === "등록되었습니다.")
+            {
+              alert(response.data.message);
+              this.setState({
+                file: null,
+                userName: '',
+                birthday: '',
+                gender: '',
+                job: '',
+                fileName: '',
+                open: false
+                })
+                this.props.stateRefresh();
+            }else{
+                alert("실패하였습니다.");
+            }
+                
         })    
     }
             
@@ -76,7 +92,8 @@ class CustomerAdd extends Component {
         open: false
         })
     }
-        
+    
+    /* 등록 API 호출 */
     addCustomer(){
 
         const url = 'http://localhost:8080/user';
@@ -96,8 +113,6 @@ class CustomerAdd extends Component {
         
     }
         
-  
-
     render() {
         const { classes } = this.props;
         return (

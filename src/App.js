@@ -27,8 +27,7 @@ import MailIcon from '@material-ui/icons/Mail';
 
 const styles = theme => ({
   root: {
-    width: "100%",
-    minWidth: 1080
+    width: "100%"
   },
   menu: {
     marginTop: 15,
@@ -104,13 +103,34 @@ const styles = theme => ({
 });
      
 class App extends Component {
-  state = {
-    customers: '',
-    completed: 0,
-    opens : false
+
+  constructor(props) {
+   super(props);
+    
+    this.state = {
+      customers: '',
+      completed: 0,
+      opens : false,
+      searchKeyword: ''
+    }
+    
+      this.stateRefresh = this.stateRefresh.bind(this);
   }
 
+  /* Refresh 함수 */
+  stateRefresh() {
 
+    this.setState({
+     customers: '',
+     completed: 0,
+     opens : false
+    });
+    
+    this._getData();
+    
+  }
+    
+  /* Select Api, 타이머 호출  */
   componentDidMount() {
     this.timer = setInterval(this.progress, 20);
     this._getData();
@@ -133,40 +153,48 @@ class App extends Component {
     .catch(err =>console.log(err));
   }
   
-  _renderUser = () => {
-    const customer = this.state.customers.map(customer => {
-      return (
-        <Customer
+  /* User 객체 생성  */
+  _renderUser = (data) => {
+
+    data = data.filter((c) => {
+        return c.name.indexOf(this.state.searchKeyword) > -1;
+    });
+
+    return data.map((customer) => {
+        return  <Customer
           id={customer.id}
           name={customer.name}
           birthday={customer.birthday}
           gender={customer.gender}
           job={customer.job}
-        />
-      );
+          stateRefresh={this.stateRefresh}
+       />
     });
-    return customer;
   };
 
     
-   componentWillUnmount() {
+  componentWillUnmount() {
     clearInterval(this.timer);
   }
-      
+  /* 로딩 바 생성  */    
   progress = () => {
       const { completed } = this.state;
       this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
   };
 
-  handleDrawerToggle = () => this.setState({toggle: !this.state.toggle})
-  handleClickOpen = () => this.setState({ 
-    opens: !this.state.opens
-  })
 
+  /* handle 함수  */
+  handleDrawerToggle = () => this.setState({toggle: !this.state.toggle})
+  handleClickOpen = () => this.setState({ opens: !this.state.opens})
   handleSendClose = (data) => {
     this.setState({
       opens : data
     })
+  }
+  handleValueChange = (e) =>{
+    let nextState = {};
+    nextState[e.target.name] = e.target.value;
+    this.setState(nextState);
   }
 
   render() {
@@ -192,6 +220,9 @@ class App extends Component {
                         root: classes.inputRoot,
                         input: classes.inputInput,
                       }}
+                      name="searchKeyword"
+                      value={this.state.searchKeyword}
+                      onChange={this.handleValueChange}
                     />
                   </div>
               </Toolbar>
@@ -219,7 +250,7 @@ class App extends Component {
           </Drawer>
           {/* 고객추가 버튼 */}
           <div className={classes.menu}>
-            <CustomerAdd />
+            <CustomerAdd stateRefresh={this.stateRefresh} />
             <Preparation opens={this.state.opens} send={this.handleSendClose}/>
           </div>
           {/*고객 List */}
@@ -228,7 +259,6 @@ class App extends Component {
                 <TableHead>
                     <TableRow>
                       <TableCell>번호</TableCell>
-                      <TableCell>이미지</TableCell>
                       <TableCell>이름</TableCell>
                       <TableCell>생년월일</TableCell>
                       <TableCell>성별</TableCell>
@@ -238,12 +268,10 @@ class App extends Component {
                   </TableHead>
                   <TableBody>
 
-                    {customers ? this._renderUser() : <TableCell colSpan="6" align="center">
+                    {customers ? this._renderUser(this.state.customers) : <TableCell colSpan="6" align="center">
                        <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed} />
                     </TableCell>}
                   
-               
-
                   </TableBody>
               </Table>
             </Paper>

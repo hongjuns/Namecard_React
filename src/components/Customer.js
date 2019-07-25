@@ -5,19 +5,8 @@ import CustomerDelete from './CustomerDelete'
 
 class Customer extends Component {
     render() {
-        const customer = this.props.id
-       // console.log(customer)
-
         return (
-         
-             /* 
-              <div>
-                <CustomerProfile id={customer.id} image={customer.image} name={customer.name}/>  
-                <CustomerInfo birthday={customer.birthday} gender={customer.gender} job={customer.job}/>
-              </div>
-                  <TableCell><img src={customer.image} alt="profile"/></TableCell>
-            */
-        
+      
             <TableRow>
               
                     <TableCell>{this.props.id}</TableCell>
@@ -25,7 +14,7 @@ class Customer extends Component {
                     <TableCell>{this.props.birthday}</TableCell>
                     <TableCell>{this.props.gender}</TableCell>
                     <TableCell>{this.props.job}</TableCell>
-                    <TableCell><CustomerDelete/></TableCell>
+                    <TableCell><CustomerDelete delid={this.props.id} stateRefresh={this.props.stateRefresh}/></TableCell>
 
             </TableRow>
           
